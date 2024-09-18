@@ -1,0 +1,53 @@
+module(
+    name = "hephaestus",
+)
+
+##############
+# Toolchains #
+##############
+bazel_dep(name = "toolchains_llvm", version = "1.0.0")
+
+llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+
+LLVM_VERSIONS = {
+    "": "17.0.6",
+    "linux-aarch64": "17.0.6",
+    "linux-x86_64": "17.0.6",
+}
+
+llvm.toolchain(
+    name = "llvm_toolchain",
+    llvm_versions = LLVM_VERSIONS,
+)
+use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
+
+register_toolchains("@llvm_toolchain//:all")
+
+############################
+# Third-party dependencies #
+############################
+
+bazel_dep(name = "abseil-cpp", version = "20240116.2")
+bazel_dep(name = "eigen", version = "3.4.0")
+bazel_dep(name = "fmt", version = "11.0.1")
+bazel_dep(name = "googletest", version = "1.14.0.bcr.1")
+bazel_dep(name = "lz4", version = "1.9.4")
+bazel_dep(name = "magic_enum", version = "0.9.5")
+bazel_dep(name = "mcap", version = "1.2.1")
+bazel_dep(name = "nlohmann_json", version = "3.11.3")
+bazel_dep(name = "protobuf", version = "28.1")
+bazel_dep(name = "zstd", version = "1.5.6")
+
+######################
+# Local dependencies #
+######################
+
+local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "local_repository")
+
+local_repository(
+    name = "mcap_lib",
+    path = "bazel/mcap_lib",
+)
+
+non_module_dependencies = use_extension("//bazel:extensions.bzl", "non_module_dependencies")
+use_repo(non_module_dependencies, "range-v3", "zenoh-c", "zenoh-cpp")
