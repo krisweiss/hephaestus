@@ -13,24 +13,21 @@
 #include <fmt/core.h>
 
 #include "hephaestus/cli/program_options.h"
-#include "hephaestus/ipc/common.h"
-#include "hephaestus/ipc/program_options.h"
+#include "hephaestus/ipc/topic.h"
 #include "hephaestus/ipc/zenoh/liveliness.h"
+#include "hephaestus/ipc/zenoh/program_options.h"
 #include "hephaestus/ipc/zenoh/session.h"
 #include "hephaestus/utils/signal_handler.h"
 #include "hephaestus/utils/stack_trace.h"
 
 void getListOfPublisher(const heph::ipc::zenoh::Session& session, std::string_view topic) {
   const auto publishers_info = heph::ipc::zenoh::getListOfPublishers(session, topic);
-  std::for_each(publishers_info.begin(), publishers_info.end(),
-                [](const auto& info) { heph::ipc::zenoh::printPublisherInfo(info); });
+  std::for_each(publishers_info.begin(), publishers_info.end(), &heph::ipc::zenoh::printPublisherInfo);
 }
 
 void getLiveListOfPublisher(heph::ipc::zenoh::SessionPtr session, heph::ipc::TopicConfig topic_config) {
-  auto callback = [](const auto& info) { heph::ipc::zenoh::printPublisherInfo(info); };
-
   const heph::ipc::zenoh::PublisherDiscovery discover{ std::move(session), std::move(topic_config),
-                                                       std::move(callback) };
+                                                       &heph::ipc::zenoh::printPublisherInfo };
 
   heph::utils::TerminationBlocker::waitForInterrupt();
 }
@@ -40,11 +37,11 @@ auto main(int argc, const char* argv[]) -> int {
 
   try {
     auto desc = heph::cli::ProgramDescription("List all the publishers of a topic.");
-    heph::ipc::appendIPCProgramOption(desc);
+    heph::ipc::zenoh::appendProgramOption(desc);
     desc.defineFlag("live", 'l', "if set the app will keep running waiting for new publisher to advertise");
     const auto args = std::move(desc).parse(argc, argv);
 
-    auto [session_config, topic_config] = heph::ipc::parseIPCProgramOptions(args);
+    auto [session_config, topic_config] = heph::ipc::zenoh::parseProgramOptions(args);
 
     fmt::println("Opening session...");
     auto session = heph::ipc::zenoh::createSession(std::move(session_config));
