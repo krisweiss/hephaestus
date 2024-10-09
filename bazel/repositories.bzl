@@ -2,10 +2,6 @@
 repositories.bzl - Bazel repository definitions for Hephaestus
 """
 
-load(
-    "@bazel_tools//tools/build_defs/repo:git.bzl",
-    "new_git_repository",
-)
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def init_repositories():
@@ -21,7 +17,7 @@ def init_repositories():
         sha256 = "612b5d89f58a578240b28a1304ffb0d085686ebe0137adf175ed0e3382b7ed58",
     )
 
-    ZENOH_VERSION = "0.11.0.3"
+    ZENOH_VERSION = "1.0.0.9"
 
     _ALL_CONTENT = """
 filegroup(
@@ -34,14 +30,15 @@ filegroup(
     http_archive(
         name = "zenoh-c",
         build_file_content = _ALL_CONTENT,
-        urls = ["https://github.com/eclipse-zenoh/zenoh-c/releases/download/{version}/zenoh-c-{version}-x86_64-unknown-linux-gnu-standalone.zip".format(version = ZENOH_VERSION)],
-        sha256 = "e1808fcd6ff155a9bcd6d819de2233305fd3c1b0e07bb9af0b81aa56b3c8c1f3",
+        urls = ["https://github.com/eclipse-zenoh/zenoh-c/archive/{version}.zip".format(version = ZENOH_VERSION)],
+        strip_prefix = "zenoh-c-" + ZENOH_VERSION,
+        sha256 = "23f2cbf44465663dfc4df056f3b66e294e5f702a4b3647d8a50a8995ac8154b4",
     )
 
     http_archive(
         name = "zenoh-cpp",
         build_file_content = _ALL_CONTENT,
-        urls = ["https://github.com/eclipse-zenoh/zenoh-cpp/releases/download/{version}/zenoh-cpp-{version}.zip".format(version = ZENOH_VERSION)],
+        urls = ["https://github.com/eclipse-zenoh/zenoh-cpp/archive/{version}.zip".format(version = ZENOH_VERSION)],
         strip_prefix = "zenoh-cpp-" + ZENOH_VERSION,
-        sha256 = "3540b8b05688d3a460312bdecb7dcbf85b8d1348ba07374dd0faec90c5a8184c",
+        sha256 = "251fff971f100e7f8c523171860526281b9fc30ff78fc9eb7ddadc31fdbf7d28",
     )

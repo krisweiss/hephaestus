@@ -1,4 +1,4 @@
-load("//bazel:hephaestus.bzl", "heph_cc_test", "heph_cc_binary", "heph_cc_library")
+load("//bazel:hephaestus.bzl", "heph_cc_binary", "heph_cc_library", "heph_cc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -61,8 +61,8 @@ heph_cc_library(
         "include/**/*.h",
     ]) + ["src/version_impl.h"],
     extra_copts = INCLUDE_PATHS,
-    visibility = ["//visibility:public"],
     includes = ["include"],
+    visibility = ["//visibility:public"],
     deps = [
         ":version",
         "@abseil-cpp//absl/log:check",
@@ -91,7 +91,6 @@ UTILS_TEST_DEPS = [
     ":utils",
     "@googletest//:gtest",
 ]
-
 
 heph_cc_test(
     name = "bit_flag_tests",

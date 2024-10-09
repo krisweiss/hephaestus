@@ -13,7 +13,7 @@ def heph_copts():
             "-pthread",
             "-std=c++20",
             "-Iexternal/abseil-cpp~",
-        ] 
+        ]
     )
 
 def heph_test_linkopts():
