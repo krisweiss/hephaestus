@@ -13,6 +13,7 @@
 #include <fmt/core.h>
 #include <fmt/format.h>
 #include <fmt/std.h>  // NOLINT(misc-include-cleaner)
+#include <fmt/ranges.h>
 
 using ValueMap = std::unordered_map<std::string, heph::telemetry::Metric::ValueType>;
 using ValuePair = std::pair<const std::string, heph::telemetry::Metric::ValueType>;
